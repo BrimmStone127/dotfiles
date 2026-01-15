@@ -1,0 +1,17 @@
+# Taskwarrior configuration
+
+# Files
+data.location=~/.task
+
+# Color theme (optional - use 'task color' to see options)
+include /usr/share/taskwarrior/dark-256.theme
+
+# Default report
+default.command=list
+
+# Urgency coefficients (customize priority)
+urgency.user.tag.work.coefficient=5.0
+urgency.user.tag.urgent.coefficient=10.0
+
+# Week starts on Monday
+weekstart=monday
