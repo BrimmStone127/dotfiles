@@ -319,26 +319,42 @@ alias nsync='sync-notes'
 # Godot development (WSL only)
 if [[ "$DOTFILES_OS" == "wsl" ]]; then
   export GODOT="/mnt/c/Users/clayb/Desktop/temp_backup/Godot_v4.2.1-stable_win64.exe"
+  export GODOT_PROJECTS="$HOME/projects"
 
-  # Open Godot editor
+  # godot [project] - open project in editor, or list projects if no arg
   godot() {
-    if [ -n "$1" ]; then
-      "$GODOT" --path "$1" &
+    if [ -z "$1" ]; then
+      # List available Godot projects
+      echo "Godot projects:"
+      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "  %h\n" 2>/dev/null | xargs -I{} basename {}
+      return
+    fi
+
+    local project_path="$GODOT_PROJECTS/$1"
+    if [ -f "$project_path/project.godot" ]; then
+      cd "$project_path"
+      "$GODOT" --path . &>/dev/null &
+      echo "Opening $1 in Godot..."
     else
-      "$GODOT" &
+      echo "Project not found: $1"
+      echo "Available projects:"
+      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "  %h\n" 2>/dev/null | xargs -I{} basename {}
     fi
   }
 
-  # Run a Godot project
+  # godot-run [project] - run project without editor
   godot-run() {
-    local project="${1:-.}"
-    "$GODOT" --path "$project" &
+    local project_path="${1:-.}"
+    [ -d "$GODOT_PROJECTS/$1" ] && project_path="$GODOT_PROJECTS/$1"
+    "$GODOT" --path "$project_path" &>/dev/null &
   }
 
-  # PlanetGame shortcuts
-  alias planet='cd ~/projects/PlanetGame'
-  alias planet-edit='cd ~/projects/PlanetGame && "$GODOT" --path . &'
-  alias planet-run='cd ~/projects/PlanetGame && "$GODOT" --path . &'
+  # Tab completion for godot command
+  _godot_completions() {
+    local projects=$(find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "%h\n" 2>/dev/null | xargs -I{} basename {})
+    COMPREPLY=($(compgen -W "$projects" -- "${COMP_WORDS[1]}"))
+  }
+  complete -F _godot_completions godot godot-run
 fi
 
 # Pi camera commands (WSL only - downloads to Windows)
