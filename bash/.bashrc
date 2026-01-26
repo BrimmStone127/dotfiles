@@ -316,6 +316,31 @@ alias nl='note -l' #list all notes
 alias weekly='weekly-summary'
 alias nsync='sync-notes'
 
+# Godot development (WSL only)
+if [[ "$DOTFILES_OS" == "wsl" ]]; then
+  export GODOT="/mnt/c/Users/clayb/Desktop/temp_backup/Godot_v4.2.1-stable_win64.exe"
+
+  # Open Godot editor
+  godot() {
+    if [ -n "$1" ]; then
+      "$GODOT" --path "$1" &
+    else
+      "$GODOT" &
+    fi
+  }
+
+  # Run a Godot project
+  godot-run() {
+    local project="${1:-.}"
+    "$GODOT" --path "$project" &
+  }
+
+  # PlanetGame shortcuts
+  alias planet='cd ~/projects/PlanetGame'
+  alias planet-edit='cd ~/projects/PlanetGame && "$GODOT" --path . &'
+  alias planet-run='cd ~/projects/PlanetGame && "$GODOT" --path . &'
+fi
+
 # Pi camera commands (WSL only - downloads to Windows)
 if [[ "$DOTFILES_OS" == "wsl" ]]; then
   pi-photo() {
