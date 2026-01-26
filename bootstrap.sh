@@ -69,6 +69,7 @@ install_debian() {
   sudo apt install -y bat         # better cat (called batcat)
   sudo apt install -y exa         # better ls (may need to use eza on newer systems)
   sudo apt install -y taskwarrior # task management
+  sudo apt install -y xclip       # clipboard support for tmux
 
   # Install starship
   if ! command -v starship &>/dev/null; then
