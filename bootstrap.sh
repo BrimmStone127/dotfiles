@@ -66,8 +66,8 @@ install_debian() {
   echo "Installing packages with apt..."
   sudo apt install -y "${COMMON_PACKAGES[@]}"
   sudo apt install -y build-essential
-  sudo apt install -y bat         # better cat (called batcat)
-  sudo apt install -y exa         # better ls (may need to use eza on newer systems)
+  sudo apt install -y bat         # better cat (called batcat on some systems)
+  sudo apt install -y eza         # better ls (successor to exa)
   sudo apt install -y taskwarrior # task management
   sudo apt install -y xclip       # clipboard support for tmux
 
