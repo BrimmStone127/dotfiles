@@ -57,12 +57,15 @@ backup_if_exists "$HOME/.bashrc"
 backup_if_exists "$HOME/.tmux.conf"
 backup_if_exists "$HOME/.config/nvim"
 backup_if_exists "$HOME/.taskrc"
+backup_if_exists "$HOME/.ssh/config"
 
 # Remove backup dir if empty
 rmdir "$backup_dir" 2>/dev/null && echo "No backups needed" || echo "Backed up existing configs to $backup_dir"
 
-# Ensure .config exists
+# Ensure directories exist
 mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
 
 # Stow configurations
 echo "Stowing configurations..."
@@ -70,6 +73,7 @@ stow -v -t "$HOME" bash
 stow -v -t "$HOME" tmux
 stow -v -t "$HOME" nvim
 stow -v -t "$HOME" task
+stow -v -t "$HOME" ssh
 
 # Set up secrets file if it doesn't exist
 if [ ! -f "$HOME/.secrets" ]; then
