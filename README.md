@@ -1,27 +1,49 @@
-# My Development Environment Dotfiles
+# Dotfiles
 
-Cross-machine configuration for my development environment.
+Cross-platform development environment for WSL, macOS, and Raspberry Pi.
 
 ## Quick Start
-```bash
-git clone https://github.com/yourusername/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-./install.sh
-```
 
-## Manual Installation
+On a new machine:
+
 ```bash
+# Clone the repo
+git clone git@github.com:Brimmstone127/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow bash
-stow tmux
-stow nvim
-stow task
+
+# Install dependencies (detects OS automatically)
+./bootstrap.sh
+
+# Symlink configs
+./install.sh
+
+# Add your API keys
+vim ~/.secrets
+
+# Reload shell
 source ~/.bashrc
 ```
 
-## Updating
+## Supported Platforms
 
-After making changes to your configs:
+| Platform | Status |
+|----------|--------|
+| WSL2 (Ubuntu) | Full support |
+| macOS | Full support |
+| Raspberry Pi | Full support |
+| Linux (Debian/Ubuntu) | Full support |
+
+## What's Included
+
+- **bash/** - Shell configuration with cross-platform aliases
+- **tmux/** - Tmux configuration
+- **nvim/** - Neovim configuration (LazyVim-based)
+- **task/** - Taskwarrior configuration
+
+## Updating Configs
+
+After making changes on any machine:
+
 ```bash
 cd ~/dotfiles
 git add -A
@@ -29,17 +51,32 @@ git commit -m "Update configs"
 git push
 ```
 
-## Contents
+On other machines:
 
-- **bash/**: Bash configuration, aliases, and functions
-- **tmux/**: Tmux configuration and plugins
-- **nvim/**: Neovim configuration (LazyVim-based)
-- **task/**: Taskwarrior configuration
+```bash
+cd ~/dotfiles
+git pull
+```
+
+## Secrets Management
+
+API keys and secrets are stored in `~/.secrets` (not tracked in git).
+
+Template: `bash/.secrets.template`
+
+## Adding New Configs
+
+1. Create a directory: `mkdir -p ~/dotfiles/newapp/.config/newapp`
+2. Move your config: `mv ~/.config/newapp/* ~/dotfiles/newapp/.config/newapp/`
+3. Stow it: `stow -v newapp`
+4. Add to `install.sh`
 
 ## Requirements
 
-- Ubuntu 24.04 (WSL2)
-- Neovim 0.10+
-- Tmux 3.0+
+Installed by `bootstrap.sh`:
+- GNU Stow
 - Git
-- Stow
+- Neovim
+- Tmux
+- Starship prompt
+- ripgrep, fzf, bat/batcat, eza/exa
