@@ -316,9 +316,9 @@ alias nl='note -l' #list all notes
 alias weekly='weekly-summary'
 alias nsync='sync-notes'
 
-# Godot development (WSL only)
-if [[ "$DOTFILES_OS" == "wsl" ]]; then
-  export GODOT="/mnt/c/Users/clayb/Desktop/temp_backup/Godot_v4.2.1-stable_win64.exe"
+# Godot development
+if [[ "$DOTFILES_OS" == "wsl" || "$DOTFILES_OS" == "linux" ]]; then
+  export GODOT="$HOME/tools/Godot_v4.2.1-stable_linux.x86_64"
   export GODOT_PROJECTS="$HOME/projects"
 
   # godot [project] - open project in editor, or list projects if no arg
