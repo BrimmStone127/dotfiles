@@ -316,29 +316,86 @@ alias nl='note -l' #list all notes
 alias weekly='weekly-summary'
 alias nsync='sync-notes'
 
+# WSLg display support
+if [[ "$DOTFILES_OS" == "wsl" ]] && [[ -d /mnt/wslg ]]; then
+  export DISPLAY=:0
+  export WAYLAND_DISPLAY=wayland-0
+  export XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
+  export PULSE_SERVER=/mnt/wslg/PulseServer
+fi
+
 # Godot development
-if [[ "$DOTFILES_OS" == "wsl" || "$DOTFILES_OS" == "linux" ]]; then
-  export GODOT="$HOME/tools/Godot_v4.2.1-stable_linux.x86_64"
-  export GODOT_PROJECTS="$HOME/projects"
+# Set GODOT in ~/.secrets to override auto-detection
+export GODOT_PROJECTS="${GODOT_PROJECTS:-$HOME/projects}"
+
+# Auto-detect Godot if not set
+if [[ -z "$GODOT" ]]; then
+  if [[ "$DOTFILES_OS" == "wsl" ]]; then
+    # Look for Windows Godot (prefer console version for terminal output)
+    for godot_path in \
+      "/mnt/c/Program Files/Godot/Godot"*"_console.exe" \
+      "/mnt/c/Program Files/Godot/Godot"*".exe" \
+      "/mnt/c/Godot/Godot"*"_console.exe" \
+      "/mnt/c/Godot/Godot"*".exe" \
+      "$HOME/tools/Godot"*"_console.exe" \
+      "$HOME/tools/Godot"*".exe"; do
+      [[ -f "$godot_path" ]] && export GODOT="$godot_path" && break
+    done
+  elif [[ "$DOTFILES_OS" == "macos" ]]; then
+    # macOS Godot locations
+    for godot_path in \
+      "/Applications/Godot.app/Contents/MacOS/Godot" \
+      "$HOME/Applications/Godot.app/Contents/MacOS/Godot"; do
+      [[ -f "$godot_path" ]] && export GODOT="$godot_path" && break
+    done
+  elif [[ "$DOTFILES_OS" == "linux" || "$DOTFILES_OS" == "pi" ]]; then
+    # Linux Godot locations
+    for godot_path in \
+      "$HOME/tools/Godot"*".x86_64" \
+      "$HOME/tools/Godot"*".64" \
+      "/usr/local/bin/godot" \
+      "/usr/bin/godot"; do
+      [[ -f "$godot_path" ]] && export GODOT="$godot_path" && break
+    done
+  fi
+fi
+
+# Only define functions if Godot is available
+if [[ -n "$GODOT" ]]; then
+  # Helper to convert paths for Windows Godot on WSL
+  _godot_path() {
+    if [[ "$DOTFILES_OS" == "wsl" ]]; then
+      wslpath -w "$1"
+    else
+      echo "$1"
+    fi
+  }
+
+  # Helper to list projects
+  _godot_list_projects() {
+    echo "Godot projects:"
+    if [[ "$DOTFILES_OS" == "macos" ]]; then
+      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" 2>/dev/null | xargs -I{} dirname {} | xargs -I{} basename {}
+    else
+      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "  %h\n" 2>/dev/null | xargs -I{} basename {}
+    fi
+  }
 
   # godot [project] - open project in editor, or list projects if no arg
   godot() {
     if [ -z "$1" ]; then
-      # List available Godot projects
-      echo "Godot projects:"
-      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "  %h\n" 2>/dev/null | xargs -I{} basename {}
+      _godot_list_projects
       return
     fi
 
     local project_path="$GODOT_PROJECTS/$1"
     if [ -f "$project_path/project.godot" ]; then
       cd "$project_path"
-      "$GODOT" --path . &>/dev/null &
+      "$GODOT" --path "$(_godot_path "$(pwd)")" --editor &>/dev/null &
       echo "Opening $1 in Godot..."
     else
       echo "Project not found: $1"
-      echo "Available projects:"
-      find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "  %h\n" 2>/dev/null | xargs -I{} basename {}
+      _godot_list_projects
     fi
   }
 
@@ -346,12 +403,23 @@ if [[ "$DOTFILES_OS" == "wsl" || "$DOTFILES_OS" == "linux" ]]; then
   godot-run() {
     local project_path="${1:-.}"
     [ -d "$GODOT_PROJECTS/$1" ] && project_path="$GODOT_PROJECTS/$1"
-    "$GODOT" --path "$project_path" &>/dev/null &
+
+    # Convert to absolute path if relative
+    if [[ "$project_path" != /* ]]; then
+      project_path="$(cd "$project_path" 2>/dev/null && pwd)"
+    fi
+
+    "$GODOT" --path "$(_godot_path "$project_path")" &
   }
 
   # Tab completion for godot command
   _godot_completions() {
-    local projects=$(find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "%h\n" 2>/dev/null | xargs -I{} basename {})
+    local projects
+    if [[ "$DOTFILES_OS" == "macos" ]]; then
+      projects=$(find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" 2>/dev/null | xargs -I{} dirname {} | xargs -I{} basename {})
+    else
+      projects=$(find "$GODOT_PROJECTS" -maxdepth 2 -name "project.godot" -printf "%h\n" 2>/dev/null | xargs -I{} basename {})
+    fi
     COMPREPLY=($(compgen -W "$projects" -- "${COMP_WORDS[1]}"))
   }
   complete -F _godot_completions godot godot-run
