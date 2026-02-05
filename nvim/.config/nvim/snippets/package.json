@@ -1,0 +1,13 @@
+{
+  "name": "custom-snippets",
+  "contributes": {
+    "snippets": [
+      { "language": "javascript", "path": "./javascript.json" },
+      { "language": "javascriptreact", "path": "./javascript.json" },
+      { "language": "typescript", "path": "./typescript.json" },
+      { "language": "typescriptreact", "path": "./typescript.json" },
+      { "language": "astro", "path": "./typescript.json" },
+      { "language": "python", "path": "./python.json" }
+    ]
+  }
+}

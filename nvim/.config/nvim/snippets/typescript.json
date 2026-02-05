@@ -1,0 +1,260 @@
+{
+  "Interface": {
+    "prefix": "int",
+    "body": [
+      "interface $1 {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Interface"
+  },
+  "Interface Extends": {
+    "prefix": "intex",
+    "body": [
+      "interface $1 extends $2 {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Interface extends"
+  },
+  "Type": {
+    "prefix": "type",
+    "body": "type $1 = $0;",
+    "description": "Type alias"
+  },
+  "Type Object": {
+    "prefix": "typeo",
+    "body": [
+      "type $1 = {",
+      "\t$0",
+      "};"
+    ],
+    "description": "Type object"
+  },
+
+  "Typed Arrow Function": {
+    "prefix": "taf",
+    "body": "const $1 = ($2: $3): $4 => {\n\t$0\n};",
+    "description": "Typed arrow function"
+  },
+  "Async Typed Arrow Function": {
+    "prefix": "taaf",
+    "body": "const $1 = async ($2: $3): Promise<$4> => {\n\t$0\n};",
+    "description": "Typed async arrow function"
+  },
+  "Typed Function": {
+    "prefix": "tfn",
+    "body": "function $1($2: $3): $4 {\n\t$0\n}",
+    "description": "Typed function"
+  },
+  "Async Typed Function": {
+    "prefix": "tafn",
+    "body": "async function $1($2: $3): Promise<$4> {\n\t$0\n}",
+    "description": "Typed async function"
+  },
+
+  "Generic Function": {
+    "prefix": "gfn",
+    "body": "function $1<$2>($3: $2): $4 {\n\t$0\n}",
+    "description": "Generic function"
+  },
+  "Generic Arrow Function": {
+    "prefix": "gaf",
+    "body": "const $1 = <$2>($3: $2): $4 => {\n\t$0\n};",
+    "description": "Generic arrow function"
+  },
+
+  "Enum": {
+    "prefix": "enum",
+    "body": [
+      "enum $1 {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Enum"
+  },
+
+  "Type Guard": {
+    "prefix": "guard",
+    "body": [
+      "function is$1(value: unknown): value is $1 {",
+      "\treturn $0;",
+      "}"
+    ],
+    "description": "Type guard"
+  },
+
+  "Readonly": {
+    "prefix": "ro",
+    "body": "readonly $0",
+    "description": "Readonly property"
+  },
+  "Partial": {
+    "prefix": "partial",
+    "body": "Partial<$0>",
+    "description": "Partial type"
+  },
+  "Required": {
+    "prefix": "required",
+    "body": "Required<$0>",
+    "description": "Required type"
+  },
+  "Pick": {
+    "prefix": "pick",
+    "body": "Pick<$1, '$0'>",
+    "description": "Pick type"
+  },
+  "Omit": {
+    "prefix": "omit",
+    "body": "Omit<$1, '$0'>",
+    "description": "Omit type"
+  },
+  "Record": {
+    "prefix": "record",
+    "body": "Record<$1, $0>",
+    "description": "Record type"
+  },
+
+  "API Route (Astro)": {
+    "prefix": "apiroute",
+    "body": [
+      "import type { APIRoute } from 'astro';",
+      "",
+      "export const $1: APIRoute = async ({ $2 }) => {",
+      "\ttry {",
+      "\t\t$0",
+      "\t\treturn new Response(JSON.stringify({ success: true }), {",
+      "\t\t\tstatus: 200,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t} catch (error) {",
+      "\t\treturn new Response(JSON.stringify({ error: 'Internal error' }), {",
+      "\t\t\tstatus: 500,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t}",
+      "};"
+    ],
+    "description": "Astro API route handler"
+  },
+  "API GET Route": {
+    "prefix": "apiget",
+    "body": [
+      "import type { APIRoute } from 'astro';",
+      "",
+      "export const GET: APIRoute = async () => {",
+      "\ttry {",
+      "\t\t$0",
+      "\t\treturn new Response(JSON.stringify(data), {",
+      "\t\t\tstatus: 200,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t} catch (error) {",
+      "\t\treturn new Response(JSON.stringify({ error: 'Failed to fetch' }), {",
+      "\t\t\tstatus: 500,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t}",
+      "};"
+    ],
+    "description": "Astro GET API route"
+  },
+  "API POST Route": {
+    "prefix": "apipost",
+    "body": [
+      "import type { APIRoute } from 'astro';",
+      "",
+      "export const POST: APIRoute = async ({ request }) => {",
+      "\ttry {",
+      "\t\tconst body = await request.json();",
+      "\t\t$0",
+      "\t\treturn new Response(JSON.stringify({ success: true }), {",
+      "\t\t\tstatus: 201,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t} catch (error) {",
+      "\t\treturn new Response(JSON.stringify({ error: 'Failed to create' }), {",
+      "\t\t\tstatus: 500,",
+      "\t\t\theaders: { 'Content-Type': 'application/json' },",
+      "\t\t});",
+      "\t}",
+      "};"
+    ],
+    "description": "Astro POST API route"
+  },
+
+  "Response JSON": {
+    "prefix": "resjson",
+    "body": [
+      "new Response(JSON.stringify($1), {",
+      "\tstatus: $2,",
+      "\theaders: { 'Content-Type': 'application/json' },",
+      "})"
+    ],
+    "description": "JSON Response"
+  },
+
+  "Zod Schema": {
+    "prefix": "zod",
+    "body": [
+      "import { z } from 'zod';",
+      "",
+      "const $1Schema = z.object({",
+      "\t$0",
+      "});",
+      "",
+      "type $1 = z.infer<typeof $1Schema>;"
+    ],
+    "description": "Zod schema with type inference"
+  },
+
+  "React Component": {
+    "prefix": "rfc",
+    "body": [
+      "interface $1Props {",
+      "\t$2",
+      "}",
+      "",
+      "export function $1({ $3 }: $1Props) {",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t$0",
+      "\t\t</div>",
+      "\t);",
+      "}"
+    ],
+    "description": "React functional component"
+  },
+  "React useState": {
+    "prefix": "us",
+    "body": "const [$1, set$2] = useState<$3>($0);",
+    "description": "useState hook"
+  },
+  "React useEffect": {
+    "prefix": "ue",
+    "body": [
+      "useEffect(() => {",
+      "\t$0",
+      "}, [$1]);"
+    ],
+    "description": "useEffect hook"
+  },
+  "React useMemo": {
+    "prefix": "um",
+    "body": [
+      "const $1 = useMemo(() => {",
+      "\t$0",
+      "}, [$2]);"
+    ],
+    "description": "useMemo hook"
+  },
+  "React useCallback": {
+    "prefix": "uc",
+    "body": [
+      "const $1 = useCallback(($2) => {",
+      "\t$0",
+      "}, [$3]);"
+    ],
+    "description": "useCallback hook"
+  }
+}
