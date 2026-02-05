@@ -217,6 +217,10 @@ alias bashrc='nvim ~/.bashrc'
 alias tmuxconf='nvim ~/.tmux.conf'
 alias vimrc='nvim ~/.config/nvim/lua/config/custom.lua'
 
+# Reference docs
+alias ref='nvim ~/dotfiles/reference/astro-js-patterns.md'
+alias snips='cat ~/dotfiles/snippets-cheatsheet.md | less'
+
 # OS-specific open command
 if [[ "$DOTFILES_OS" == "wsl" ]]; then
   alias open='explorer.exe'
