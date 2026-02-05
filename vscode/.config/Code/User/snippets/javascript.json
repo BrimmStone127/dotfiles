@@ -1,0 +1,313 @@
+{
+  "Console Log": {
+    "prefix": "cl",
+    "body": "console.log($1);",
+    "description": "Console log"
+  },
+  "Console Log Variable": {
+    "prefix": "clv",
+    "body": "console.log('$1:', $1);",
+    "description": "Console log with label"
+  },
+  "Console Error": {
+    "prefix": "ce",
+    "body": "console.error($1);",
+    "description": "Console error"
+  },
+
+  "Arrow Function": {
+    "prefix": "af",
+    "body": "const $1 = ($2) => {\n\t$0\n};",
+    "description": "Arrow function"
+  },
+  "Arrow Function Inline": {
+    "prefix": "afi",
+    "body": "const $1 = ($2) => $0;",
+    "description": "Arrow function inline"
+  },
+  "Async Arrow Function": {
+    "prefix": "aaf",
+    "body": "const $1 = async ($2) => {\n\t$0\n};",
+    "description": "Async arrow function"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": "function $1($2) {\n\t$0\n}",
+    "description": "Function declaration"
+  },
+  "Async Function": {
+    "prefix": "afn",
+    "body": "async function $1($2) {\n\t$0\n}",
+    "description": "Async function declaration"
+  },
+
+  "Try Catch": {
+    "prefix": "tc",
+    "body": [
+      "try {",
+      "\t$1",
+      "} catch (error) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Try catch block"
+  },
+  "Try Catch Finally": {
+    "prefix": "tcf",
+    "body": [
+      "try {",
+      "\t$1",
+      "} catch (error) {",
+      "\t$2",
+      "} finally {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Try catch finally block"
+  },
+  "Async Try Catch": {
+    "prefix": "atc",
+    "body": [
+      "try {",
+      "\tconst $1 = await $2;",
+      "\t$0",
+      "} catch (error) {",
+      "\tconsole.error(error);",
+      "}"
+    ],
+    "description": "Async try catch block"
+  },
+
+  "If": {
+    "prefix": "if",
+    "body": [
+      "if ($1) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "If Else": {
+    "prefix": "ife",
+    "body": [
+      "if ($1) {",
+      "\t$2",
+      "} else {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If else statement"
+  },
+  "Ternary": {
+    "prefix": "ter",
+    "body": "$1 ? $2 : $0",
+    "description": "Ternary operator"
+  },
+
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for (let i = 0; i < $1.length; i++) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "For Of": {
+    "prefix": "forof",
+    "body": [
+      "for (const $1 of $2) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "For of loop"
+  },
+  "For In": {
+    "prefix": "forin",
+    "body": [
+      "for (const $1 in $2) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "For in loop"
+  },
+  "For Each": {
+    "prefix": "foreach",
+    "body": "$1.forEach(($2) => {\n\t$0\n});",
+    "description": "Array forEach"
+  },
+
+  "Map": {
+    "prefix": "map",
+    "body": "$1.map(($2) => $0)",
+    "description": "Array map"
+  },
+  "Filter": {
+    "prefix": "filter",
+    "body": "$1.filter(($2) => $0)",
+    "description": "Array filter"
+  },
+  "Reduce": {
+    "prefix": "reduce",
+    "body": "$1.reduce((acc, $2) => {\n\t$0\n\treturn acc;\n}, $3)",
+    "description": "Array reduce"
+  },
+  "Find": {
+    "prefix": "find",
+    "body": "$1.find(($2) => $0)",
+    "description": "Array find"
+  },
+
+  "Promise": {
+    "prefix": "prom",
+    "body": [
+      "new Promise((resolve, reject) => {",
+      "\t$0",
+      "})"
+    ],
+    "description": "Promise"
+  },
+  "Promise All": {
+    "prefix": "pall",
+    "body": "const [$1] = await Promise.all([$0]);",
+    "description": "Promise.all"
+  },
+
+  "Fetch GET": {
+    "prefix": "fget",
+    "body": [
+      "const response = await fetch('$1');",
+      "const data = await response.json();",
+      "$0"
+    ],
+    "description": "Fetch GET request"
+  },
+  "Fetch POST": {
+    "prefix": "fpost",
+    "body": [
+      "const response = await fetch('$1', {",
+      "\tmethod: 'POST',",
+      "\theaders: { 'Content-Type': 'application/json' },",
+      "\tbody: JSON.stringify($2),",
+      "});",
+      "const data = await response.json();",
+      "$0"
+    ],
+    "description": "Fetch POST request"
+  },
+
+  "Import": {
+    "prefix": "imp",
+    "body": "import $1 from '$2';",
+    "description": "Import default"
+  },
+  "Import Destructured": {
+    "prefix": "imd",
+    "body": "import { $1 } from '$2';",
+    "description": "Import destructured"
+  },
+  "Export Default": {
+    "prefix": "expd",
+    "body": "export default $0;",
+    "description": "Export default"
+  },
+  "Export Named": {
+    "prefix": "exp",
+    "body": "export { $0 };",
+    "description": "Export named"
+  },
+  "Export Const": {
+    "prefix": "expc",
+    "body": "export const $1 = $0;",
+    "description": "Export const"
+  },
+
+  "Destructure Object": {
+    "prefix": "dob",
+    "body": "const { $1 } = $2;",
+    "description": "Destructure object"
+  },
+  "Destructure Array": {
+    "prefix": "dar",
+    "body": "const [$1] = $2;",
+    "description": "Destructure array"
+  },
+
+  "Set Timeout": {
+    "prefix": "timeout",
+    "body": [
+      "setTimeout(() => {",
+      "\t$0",
+      "}, $1);"
+    ],
+    "description": "setTimeout"
+  },
+  "Set Interval": {
+    "prefix": "interval",
+    "body": [
+      "const interval = setInterval(() => {",
+      "\t$0",
+      "}, $1);",
+      "",
+      "// clearInterval(interval);"
+    ],
+    "description": "setInterval"
+  },
+
+  "Class": {
+    "prefix": "class",
+    "body": [
+      "class $1 {",
+      "\tconstructor($2) {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "Class"
+  },
+  "Class Extends": {
+    "prefix": "classex",
+    "body": [
+      "class $1 extends $2 {",
+      "\tconstructor($3) {",
+      "\t\tsuper($4);",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "Class extends"
+  },
+
+  "Describe": {
+    "prefix": "desc",
+    "body": [
+      "describe('$1', () => {",
+      "\t$0",
+      "});"
+    ],
+    "description": "Test describe block"
+  },
+  "It": {
+    "prefix": "it",
+    "body": [
+      "it('$1', () => {",
+      "\t$0",
+      "});"
+    ],
+    "description": "Test it block"
+  },
+  "It Async": {
+    "prefix": "ita",
+    "body": [
+      "it('$1', async () => {",
+      "\t$0",
+      "});"
+    ],
+    "description": "Test it async block"
+  },
+  "Expect": {
+    "prefix": "expect",
+    "body": "expect($1).$0;",
+    "description": "Expect assertion"
+  }
+}

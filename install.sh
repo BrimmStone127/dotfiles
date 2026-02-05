@@ -67,6 +67,7 @@ rmdir "$backup_dir" 2>/dev/null && echo "No backups needed" || echo "Backed up e
 # Ensure directories exist
 mkdir -p "$HOME/.config"
 mkdir -p "$HOME/.config/gh"
+mkdir -p "$HOME/.config/Code/User/snippets"
 mkdir -p "$HOME/.ssh"
 mkdir -p "$HOME/.local/bin"
 chmod 700 "$HOME/.ssh"
@@ -81,6 +82,7 @@ stow -v -t "$HOME" ssh
 stow -v -t "$HOME" git
 stow -v -t "$HOME" gh
 stow -v -t "$HOME" scripts
+stow -v -t "$HOME" vscode
 
 # Set up secrets file if it doesn't exist
 if [ ! -f "$HOME/.secrets" ]; then

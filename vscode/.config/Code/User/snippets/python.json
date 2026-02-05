@@ -1,0 +1,277 @@
+{
+  "Print": {
+    "prefix": "pr",
+    "body": "print($0)",
+    "description": "Print"
+  },
+  "Print F-String": {
+    "prefix": "prf",
+    "body": "print(f'$0')",
+    "description": "Print f-string"
+  },
+  "Print Variable": {
+    "prefix": "prv",
+    "body": "print(f'{$1=}')",
+    "description": "Print variable with name"
+  },
+
+  "Function": {
+    "prefix": "def",
+    "body": [
+      "def $1($2):",
+      "\t$0"
+    ],
+    "description": "Function"
+  },
+  "Async Function": {
+    "prefix": "adef",
+    "body": [
+      "async def $1($2):",
+      "\t$0"
+    ],
+    "description": "Async function"
+  },
+  "Typed Function": {
+    "prefix": "deft",
+    "body": [
+      "def $1($2: $3) -> $4:",
+      "\t$0"
+    ],
+    "description": "Typed function"
+  },
+  "Async Typed Function": {
+    "prefix": "adeft",
+    "body": [
+      "async def $1($2: $3) -> $4:",
+      "\t$0"
+    ],
+    "description": "Async typed function"
+  },
+
+  "Class": {
+    "prefix": "class",
+    "body": [
+      "class $1:",
+      "\tdef __init__(self, $2):",
+      "\t\t$0"
+    ],
+    "description": "Class"
+  },
+  "Dataclass": {
+    "prefix": "dataclass",
+    "body": [
+      "from dataclasses import dataclass",
+      "",
+      "@dataclass",
+      "class $1:",
+      "\t$0"
+    ],
+    "description": "Dataclass"
+  },
+
+  "Try Except": {
+    "prefix": "try",
+    "body": [
+      "try:",
+      "\t$1",
+      "except Exception as e:",
+      "\t$0"
+    ],
+    "description": "Try except"
+  },
+  "Try Except Finally": {
+    "prefix": "tryf",
+    "body": [
+      "try:",
+      "\t$1",
+      "except Exception as e:",
+      "\t$2",
+      "finally:",
+      "\t$0"
+    ],
+    "description": "Try except finally"
+  },
+
+  "If": {
+    "prefix": "if",
+    "body": [
+      "if $1:",
+      "\t$0"
+    ],
+    "description": "If statement"
+  },
+  "If Else": {
+    "prefix": "ife",
+    "body": [
+      "if $1:",
+      "\t$2",
+      "else:",
+      "\t$0"
+    ],
+    "description": "If else"
+  },
+  "If Elif Else": {
+    "prefix": "ifee",
+    "body": [
+      "if $1:",
+      "\t$2",
+      "elif $3:",
+      "\t$4",
+      "else:",
+      "\t$0"
+    ],
+    "description": "If elif else"
+  },
+
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for $1 in $2:",
+      "\t$0"
+    ],
+    "description": "For loop"
+  },
+  "For Enumerate": {
+    "prefix": "fore",
+    "body": [
+      "for i, $1 in enumerate($2):",
+      "\t$0"
+    ],
+    "description": "For with enumerate"
+  },
+  "For Range": {
+    "prefix": "forr",
+    "body": [
+      "for i in range($1):",
+      "\t$0"
+    ],
+    "description": "For range"
+  },
+
+  "List Comprehension": {
+    "prefix": "lc",
+    "body": "[$1 for $2 in $3]",
+    "description": "List comprehension"
+  },
+  "Dict Comprehension": {
+    "prefix": "dc",
+    "body": "{$1: $2 for $3 in $4}",
+    "description": "Dict comprehension"
+  },
+
+  "With": {
+    "prefix": "with",
+    "body": [
+      "with $1 as $2:",
+      "\t$0"
+    ],
+    "description": "With statement"
+  },
+  "Open File": {
+    "prefix": "openf",
+    "body": [
+      "with open('$1', '$2') as f:",
+      "\t$0"
+    ],
+    "description": "Open file"
+  },
+
+  "Lambda": {
+    "prefix": "lam",
+    "body": "lambda $1: $0",
+    "description": "Lambda"
+  },
+
+  "Main": {
+    "prefix": "main",
+    "body": [
+      "def main():",
+      "\t$0",
+      "",
+      "",
+      "if __name__ == '__main__':",
+      "\tmain()"
+    ],
+    "description": "Main block"
+  },
+
+  "Flask Route": {
+    "prefix": "froute",
+    "body": [
+      "@bp.route('$1', methods=['$2'])",
+      "def $3():",
+      "\t$0"
+    ],
+    "description": "Flask route"
+  },
+  "Flask GET Route": {
+    "prefix": "fget",
+    "body": [
+      "@bp.route('$1', methods=['GET'])",
+      "def $2():",
+      "\ttry:",
+      "\t\t$0",
+      "\t\treturn jsonify(data)",
+      "\texcept Exception as e:",
+      "\t\treturn jsonify({'error': str(e)}), 500"
+    ],
+    "description": "Flask GET route"
+  },
+  "Flask POST Route": {
+    "prefix": "fpost",
+    "body": [
+      "@bp.route('$1', methods=['POST'])",
+      "def $2():",
+      "\ttry:",
+      "\t\tbody = request.get_json()",
+      "\t\t$0",
+      "\t\treturn jsonify({'success': True}), 201",
+      "\texcept Exception as e:",
+      "\t\treturn jsonify({'error': str(e)}), 500"
+    ],
+    "description": "Flask POST route"
+  },
+
+  "Pytest": {
+    "prefix": "test",
+    "body": [
+      "def test_$1():",
+      "\t$0"
+    ],
+    "description": "Pytest test function"
+  },
+  "Pytest Async": {
+    "prefix": "testa",
+    "body": [
+      "@pytest.mark.asyncio",
+      "async def test_$1():",
+      "\t$0"
+    ],
+    "description": "Pytest async test"
+  },
+  "Pytest Fixture": {
+    "prefix": "fixture",
+    "body": [
+      "@pytest.fixture",
+      "def $1():",
+      "\t$0"
+    ],
+    "description": "Pytest fixture"
+  },
+
+  "Type Hint List": {
+    "prefix": "tlist",
+    "body": "list[$0]",
+    "description": "List type hint"
+  },
+  "Type Hint Dict": {
+    "prefix": "tdict",
+    "body": "dict[$1, $0]",
+    "description": "Dict type hint"
+  },
+  "Type Hint Optional": {
+    "prefix": "topt",
+    "body": "$1 | None",
+    "description": "Optional type hint"
+  }
+}
