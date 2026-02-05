@@ -59,13 +59,16 @@ backup_if_exists "$HOME/.config/nvim"
 backup_if_exists "$HOME/.taskrc"
 backup_if_exists "$HOME/.ssh/config"
 backup_if_exists "$HOME/.gitconfig"
+backup_if_exists "$HOME/.config/gh/config.yml"
 
 # Remove backup dir if empty
 rmdir "$backup_dir" 2>/dev/null && echo "No backups needed" || echo "Backed up existing configs to $backup_dir"
 
 # Ensure directories exist
 mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.config/gh"
 mkdir -p "$HOME/.ssh"
+mkdir -p "$HOME/.local/bin"
 chmod 700 "$HOME/.ssh"
 
 # Stow configurations
@@ -76,6 +79,8 @@ stow -v -t "$HOME" nvim
 stow -v -t "$HOME" task
 stow -v -t "$HOME" ssh
 stow -v -t "$HOME" git
+stow -v -t "$HOME" gh
+stow -v -t "$HOME" scripts
 
 # Set up secrets file if it doesn't exist
 if [ ! -f "$HOME/.secrets" ]; then

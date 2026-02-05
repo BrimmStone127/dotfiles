@@ -1,0 +1,23 @@
+#!/bin/bash
+# Quick capture to daily note
+
+DAILY_NOTE="$HOME/notes/daily/$(date +%Y-%m-%d).md"
+TIMESTAMP="$(date +%H:%M)"
+
+# Create note if it doesn't exist
+if [ ! -f "$DAILY_NOTE" ]; then
+    note  # This will create it with template
+    exit 0
+fi
+
+# If argument provided, append to daily note
+if [ ! -z "$1" ]; then
+    echo "" >> "$DAILY_NOTE"
+    echo "### $TIMESTAMP" >> "$DAILY_NOTE"
+    echo "" >> "$DAILY_NOTE"
+    echo "$1" >> "$DAILY_NOTE"
+    echo "✓ Added to today's note: $1"
+else
+    # Otherwise open at the end
+    nvim + "$DAILY_NOTE"
+fi

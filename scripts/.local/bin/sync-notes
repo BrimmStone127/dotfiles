@@ -1,0 +1,19 @@
+#!/bin/bash
+# Sync notes with git
+
+cd ~/notes
+
+# Pull any remote changes first
+git pull --rebase --quiet
+
+# Add all changes
+git add -A
+
+# Only commit if there are changes
+if ! git diff-index --quiet HEAD --; then
+    git commit -m "Notes update $(date +%Y-%m-%d\ %H:%M)"
+    git push
+    echo "✓ Notes synced"
+else
+    echo "No changes to sync"
+fi

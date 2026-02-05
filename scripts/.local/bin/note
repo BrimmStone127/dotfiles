@@ -1,0 +1,212 @@
+#!/bin/bash
+
+NOTES_DIR="$HOME/notes"
+DAILY_DIR="$NOTES_DIR/daily"
+PROJECTS_DIR="$NOTES_DIR/projects"
+REFERENCE_DIR="$NOTES_DIR/reference"
+
+# Create directories if they don't exist
+mkdir -p "$DAILY_DIR" "$PROJECTS_DIR" "$REFERENCE_DIR"
+
+# Function to create note with template
+create_note() {
+    local note_file="$1"
+    local title="$2"
+    
+    if [ ! -f "$note_file" ]; then
+        cat > "$note_file" << TEMPLATE
+# $title
+
+**Created:** $(date +"%Y-%m-%d %H:%M")
+**Tags:** 
+
+---
+
+## Notes
+
+
+TEMPLATE
+    fi
+}
+
+# Function to create daily note template
+create_daily_note() {
+    local note_file="$1"
+    
+    if [ ! -f "$note_file" ]; then
+        cat > "$note_file" << TEMPLATE
+# Daily Notes - $(date +"%A, %B %d, %Y")
+
+## Morning
+
+**Goals for today:**
+- [ ] 
+- [ ] 
+- [ ] 
+
+**Top priorities:**
+1. 
+2. 
+3. 
+
+---
+
+## Throughout the Day
+
+### $(date +"%H:%M")
+
+
+---
+
+## End of Day Review
+
+**Completed:**
+- 
+
+**Tomorrow:**
+- 
+
+**Notes/Thoughts:**
+
+
+TEMPLATE
+    fi
+}
+
+# Main logic
+case "$1" in
+    "")
+        # No argument: today's daily note
+        NOTE_FILE="$DAILY_DIR/$(date +%Y-%m-%d).md"
+        create_daily_note "$NOTE_FILE"
+        ;;
+    
+    "yesterday")
+        # Yesterday's note
+        NOTE_FILE="$DAILY_DIR/$(date -d yesterday +%Y-%m-%d).md"
+        if [ ! -f "$NOTE_FILE" ]; then
+            echo "Yesterday's note doesn't exist yet"
+            exit 1
+        fi
+        ;;
+    
+    "work")
+        # Work note (persistent)
+        NOTE_FILE="$NOTES_DIR/work.md"
+        create_note "$NOTE_FILE" "Work Notes"
+        ;;
+    
+    "todo")
+        # Todo list (persistent)
+        NOTE_FILE="$NOTES_DIR/todo.md"
+        if [ ! -f "$NOTE_FILE" ]; then
+            cat > "$NOTE_FILE" << TEMPLATE
+# Todo List
+
+**Updated:** $(date +"%Y-%m-%d %H:%M")
+
+---
+
+## Today
+- [ ] 
+
+## This Week
+- [ ] 
+
+## This Month
+- [ ] 
+
+## Someday/Maybe
+- [ ] 
+
+## Waiting On
+- [ ] 
+
+TEMPLATE
+        fi
+        ;;
+    
+    "ideas")
+        # Ideas file
+        NOTE_FILE="$NOTES_DIR/ideas.md"
+        create_note "$NOTE_FILE" "Ideas & Inspiration"
+        ;;
+    
+    -p|--project)
+        # Project note
+        if [ -z "$2" ]; then
+            echo "Usage: note -p <project-name>"
+            exit 1
+        fi
+        NOTE_FILE="$PROJECTS_DIR/$2.md"
+        create_note "$NOTE_FILE" "Project: $2"
+        ;;
+    
+    -r|--reference)
+        # Reference note
+        if [ -z "$2" ]; then
+            echo "Usage: note -r <topic>"
+            exit 1
+        fi
+        NOTE_FILE="$REFERENCE_DIR/$2.md"
+        create_note "$NOTE_FILE" "Reference: $2"
+        ;;
+    
+    -l|--list)
+        # List all notes
+        echo "=== Daily Notes ==="
+        ls -1 "$DAILY_DIR" 2>/dev/null | tail -10
+        echo ""
+        echo "=== Project Notes ==="
+        ls -1 "$PROJECTS_DIR" 2>/dev/null
+        echo ""
+        echo "=== Reference Notes ==="
+        ls -1 "$REFERENCE_DIR" 2>/dev/null
+        exit 0
+        ;;
+    
+    -s|--search)
+        # Search notes
+        if [ -z "$2" ]; then
+            echo "Usage: note -s <search-term>"
+            exit 1
+        fi
+        echo "Searching for: $2"
+        rg -i "$2" "$NOTES_DIR" -l
+        exit 0
+        ;;
+    
+    -h|--help)
+        cat << HELP
+Note-taking command
+
+Usage:
+  note                    Open today's daily note
+  note yesterday          Open yesterday's note
+  note work               Open work notes
+  note todo               Open todo list
+  note ideas              Open ideas file
+  note -p <name>          Open project note
+  note -r <topic>         Open reference note
+  note -l                 List all notes
+  note -s <term>          Search in notes
+  note -h                 Show this help
+
+Examples:
+  note                    # Today's daily note
+  note -p fishing-trip    # Project note for fishing trip
+  note -r rust-tips       # Reference note about Rust
+  note -s "password"      # Find notes mentioning password
+HELP
+        exit 0
+        ;;
+    
+    *)
+        # Treat as project name by default
+        NOTE_FILE="$PROJECTS_DIR/$1.md"
+        create_note "$NOTE_FILE" "$1"
+        ;;
+esac
+
+# Open in Neovim
+nvim "$NOTE_FILE"

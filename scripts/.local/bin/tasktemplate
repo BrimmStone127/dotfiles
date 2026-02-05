@@ -1,0 +1,24 @@
+#!/bin/bash
+
+case "$1" in
+    "bug")
+        task add "$2" project:${3:-current} +bug priority:H
+        ;;
+    "feature")
+        task add "$2" project:${3:-current} +feature
+        ;;
+    "learn")
+        task add "$2" project:learning +study
+        ;;
+    "meeting")
+        task add "$2" project:${3:-work} +meeting due:${4:-today}
+        ;;
+    *)
+        echo "Usage: tasktemplate {bug|feature|learn|meeting} 'description' [project] [due]"
+        echo "Examples:"
+        echo "  tasktemplate bug 'Fix login error' webapp"
+        echo "  tasktemplate feature 'Add dark mode' frontend"
+        echo "  tasktemplate learn 'Master vim motions'"
+        echo "  tasktemplate meeting 'Team standup' work tomorrow"
+        ;;
+esac

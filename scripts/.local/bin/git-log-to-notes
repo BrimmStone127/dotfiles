@@ -1,0 +1,36 @@
+#!/bin/bash
+# Log git commit to daily notes
+
+NOTES_DIR="$HOME/notes"
+DAILY_DIR="$NOTES_DIR/daily"
+TODAY="$DAILY_DIR/$(date +%Y-%m-%d).md"
+
+# Get commit info
+REPO=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")
+HASH=$(git rev-parse --short HEAD 2>/dev/null)
+MSG=$(git log -1 --pretty=%s 2>/dev/null)
+TIME=$(date +"%H:%M")
+
+# Skip if not in a git repo
+[ -z "$HASH" ] && exit 0
+
+# Create daily note if it doesn't exist
+mkdir -p "$DAILY_DIR"
+if [ ! -f "$TODAY" ]; then
+    cat > "$TODAY" << TEMPLATE
+# Daily Notes - $(date +"%A, %B %d, %Y")
+
+## Commits
+
+TEMPLATE
+fi
+
+# Add commits section if it doesn't exist
+if ! grep -q "## Commits" "$TODAY"; then
+    echo -e "\n## Commits\n" >> "$TODAY"
+fi
+
+# Append commit entry
+sed -i "/## Commits/a\\
+- \`$TIME\` **$REPO** [$HASH] $MSG" "$TODAY"
+
