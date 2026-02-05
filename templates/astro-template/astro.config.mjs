@@ -1,0 +1,18 @@
+import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
+
+export default defineConfig({
+  output: 'server',
+  adapter: node({
+    mode: 'standalone'
+  }),
+  server: {
+    host: '0.0.0.0',
+    port: parseInt(process.env.PORT || '4321')
+  },
+  vite: {
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }
+  }
+});

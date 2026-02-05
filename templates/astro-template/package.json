@@ -1,0 +1,26 @@
+{
+  "name": "astro-template",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs",
+    "check": "astro check && tsc --noEmit",
+    "lint": "eslint src --ext .ts,.astro",
+    "emulator": "firebase emulators:start --only firestore",
+    "dev:local": "concurrently \"npm run emulator\" \"npm run dev\""
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@astrojs/node": "^9.0.0",
+    "astro": "^5.17.0",
+    "firebase-admin": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "concurrently": "^9.0.0",
+    "typescript": "^5.9.0"
+  }
+}

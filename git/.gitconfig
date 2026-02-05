@@ -6,6 +6,7 @@
 [core]
 	pager = less -R
 	editor = nvim
+	hooksPath = /home/clay/.config/git/hooks
 [alias]
 	s = status -s
 	lg = log --oneline --graph --decorate --all

@@ -412,6 +412,25 @@ if [[ -n "$GODOT" ]]; then
     "$GODOT" --path "$(_godot_path "$project_path")" &
   }
 
+  # godot-test [project] - run tests headlessly
+  godot-test() {
+    local project_path="${1:-.}"
+    [ -d "$GODOT_PROJECTS/$1" ] && project_path="$GODOT_PROJECTS/$1"
+
+    # Convert to absolute path if relative
+    if [[ "$project_path" != /* ]]; then
+      project_path="$(cd "$project_path" 2>/dev/null && pwd)"
+    fi
+
+    # Check for test runner
+    if [ ! -f "$project_path/tests/run_tests.gd" ]; then
+      echo "Error: Test runner not found at $project_path/tests/run_tests.gd"
+      return 1
+    fi
+
+    "$GODOT" --path "$(_godot_path "$project_path")" --headless -s tests/run_tests.gd
+  }
+
   # Tab completion for godot command
   _godot_completions() {
     local projects
@@ -422,16 +441,16 @@ if [[ -n "$GODOT" ]]; then
     fi
     COMPREPLY=($(compgen -W "$projects" -- "${COMP_WORDS[1]}"))
   }
-  complete -F _godot_completions godot godot-run
+  complete -F _godot_completions godot godot-run godot-test
 fi
 
 # Pi camera commands (WSL only - downloads to Windows)
 if [[ "$DOTFILES_OS" == "wsl" ]]; then
   pi-photo() {
     echo "Taking photo..."
-    ssh clay@192.168.1.135 "cd ~/camera && source venv/bin/activate && python take_photo.py 2>/dev/null"
-    latest=$(ssh clay@192.168.1.135 "ls -t ~/photos/photo_*.jpg 2>/dev/null | head -1")
-    scp -q clay@192.168.1.135:"$latest" /mnt/c/Users/clayb/Downloads/
+    ssh clay@192.168.1.141 "cd ~/camera && source venv/bin/activate && python take_photo.py 2>/dev/null"
+    latest=$(ssh clay@192.168.1.141 "ls -t ~/photos/photo_*.jpg 2>/dev/null | head -1")
+    scp -q clay@192.168.1.141:"$latest" /mnt/c/Users/clayb/Downloads/
     filename=$(basename "$latest")
     echo "Downloaded: $filename"
   }
@@ -439,10 +458,70 @@ if [[ "$DOTFILES_OS" == "wsl" ]]; then
   pi-video() {
     duration=${1:-10}
     echo "Recording ${duration}s video..."
-    ssh clay@192.168.1.135 "ffmpeg -loglevel error -f v4l2 -framerate 15 -video_size 1280x720 -i /dev/video0 -t $duration -c:v libx264 -preset ultrafast ~/videos/video_\$(date +%Y%m%d_%H%M%S).mp4 2>/dev/null"
-    latest=$(ssh clay@192.168.1.135 "ls -t ~/videos/video_*.mp4 2>/dev/null | head -1")
-    scp -q clay@192.168.1.135:"$latest" /mnt/c/Users/clayb/Downloads/
+    ssh clay@192.168.1.141 "ffmpeg -loglevel error -f v4l2 -framerate 15 -video_size 1280x720 -i /dev/video0 -t $duration -c:v libx264 -preset ultrafast ~/videos/video_\$(date +%Y%m%d_%H%M%S).mp4 2>/dev/null"
+    latest=$(ssh clay@192.168.1.141 "ls -t ~/videos/video_*.mp4 2>/dev/null | head -1")
+    scp -q clay@192.168.1.141:"$latest" /mnt/c/Users/clayb/Downloads/
     filename=$(basename "$latest")
     echo "Downloaded: $filename"
   }
+
+  pi-mic() {
+    duration=${1:-10}
+    echo "Recording ${duration}s audio..."
+    ssh clay@192.168.1.141 "arecord -D plughw:1,0 -f S16_LE -r 48000 -c 1 -d $duration ~/audio/audio_\$(date +%Y%m%d_%H%M%S).wav 2>/dev/null"
+    latest=$(ssh clay@192.168.1.141 "ls -t ~/audio/audio_*.wav 2>/dev/null | head -1")
+    scp -q clay@192.168.1.141:"$latest" /mnt/c/Users/clayb/Downloads/
+    filename=$(basename "$latest")
+    echo "Downloaded: $filename"
+  }
+
+  pi-temp() {
+    ssh clay@192.168.1.141 "python3 ~/pi-scripts/sensors/read_temp.py"
+  }
+
+  pi-commit() {
+    # Commit on Pi and log to local notes
+    local repo="${1:-pi-scripts}"
+    local msg="$2"
+
+    if [ -z "$msg" ]; then
+      echo "Usage: pi-commit <repo> <message>"
+      echo "       pi-commit pi-scripts \"Add feature\""
+      return 1
+    fi
+
+    # Run commit on Pi
+    ssh clay@192.168.1.141 "cd ~/$repo && git add -A && git commit -m '$msg
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>'"
+
+    if [ $? -eq 0 ]; then
+      # Get commit info and log locally
+      local hash=$(ssh clay@192.168.1.141 "cd ~/$repo && git rev-parse --short HEAD")
+      local time=$(date +"%H:%M")
+      local today="$HOME/notes/daily/$(date +%Y-%m-%d).md"
+
+      mkdir -p "$HOME/notes/daily"
+      if [ ! -f "$today" ]; then
+        echo "# Daily Notes - $(date +'%A, %B %d, %Y')" > "$today"
+        echo "" >> "$today"
+        echo "## Commits" >> "$today"
+        echo "" >> "$today"
+      fi
+
+      if ! grep -q "## Commits" "$today"; then
+        echo -e "\n## Commits\n" >> "$today"
+      fi
+
+      sed -i "/## Commits/a\\
+- \`$time\` **$repo** (pi) [$hash] $msg" "$today"
+
+      echo "Logged to notes"
+    fi
+  }
 fi
+export PATH=~/.npm-global/bin:$PATH
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

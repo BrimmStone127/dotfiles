@@ -1,0 +1,44 @@
+---
+import { config } from '@lib/config';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Astro Template</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Astro Template</h1>
+    <p>Environment: <code>{config.env}</code></p>
+    <p>Firestore Emulator: <code>{config.firebase.useEmulator ? 'enabled' : 'disabled'}</code></p>
+
+    <h2>API Endpoints</h2>
+    <ul>
+      <li><a href="/api/health"><code>GET /api/health</code></a> - Health check</li>
+      <li><code>GET /api/items</code> - List items</li>
+      <li><code>POST /api/items</code> - Create item</li>
+    </ul>
+  </body>
+</html>
