@@ -257,6 +257,50 @@ newproject() {
   nvim README.md
 }
 
+# Create project from template
+from-template() {
+  local templates_dir="$HOME/dotfiles/templates"
+
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: from-template <template> <project-name>"
+    echo ""
+    echo "Available templates:"
+    ls -1 "$templates_dir" 2>/dev/null | sed 's/^/  /'
+    return 1
+  fi
+
+  local template="$1"
+  local project="$2"
+
+  if [ ! -d "$templates_dir/$template" ]; then
+    echo "Template not found: $template"
+    echo ""
+    echo "Available templates:"
+    ls -1 "$templates_dir" 2>/dev/null | sed 's/^/  /'
+    return 1
+  fi
+
+  cp -r "$templates_dir/$template" "./$project"
+  echo "Created $project from $template"
+  echo ""
+  echo "Next steps:"
+  echo "  cd $project"
+  if [ -f "./$project/package.json" ]; then
+    echo "  npm install"
+  elif [ -f "./$project/requirements.txt" ]; then
+    echo "  python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+  fi
+}
+
+# Tab completion for from-template
+_from_template_completions() {
+  local templates_dir="$HOME/dotfiles/templates"
+  if [ "${#COMP_WORDS[@]}" -eq 2 ]; then
+    COMPREPLY=($(compgen -W "$(ls -1 "$templates_dir" 2>/dev/null)" -- "${COMP_WORDS[1]}"))
+  fi
+}
+complete -F _from_template_completions from-template
+
 # Find in files
 findin() {
   rg -i "$1" "${2:-.}"
